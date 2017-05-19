@@ -253,6 +253,400 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/19/fe-code-style/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cindy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郭郭的IT成长之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/05/19/fe-code-style/" itemprop="url">前端代码规范</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-19T12:56:10+08:00">
+                2017-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>尽量避免用var,多用let和const</li>
+<li>定义对象用对象字面量<br>eg: const obj = {}</li>
+<li>定义对象的属性和方法，尽量用速写法</li>
+<li><p>少用Object.assign()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">// very bad</div><div class="line">const original = &#123; a: 1, b: 2 &#125;;</div><div class="line">const copy = Object.assign(original, &#123; c: 3 &#125;); // this mutates `original` ಠ_ಠ</div><div class="line">delete copy.a; // so does this</div><div class="line">// bad</div><div class="line">const original = &#123; a: 1, b: 2 &#125;;</div><div class="line">const copy = Object.assign(&#123;&#125;, original, &#123; c: 3 &#125;); // copy =&gt; &#123; a: 1, b: 2, c: 3 &#125;</div><div class="line">// good</div><div class="line">const original = &#123; a: 1, b: 2 &#125;;</div><div class="line">const copy = &#123; ...original, c: 3 &#125;; // copy =&gt; &#123; a: 1, b: 2, c: 3 &#125;</div><div class="line">const &#123; a, ...noA &#125; = copy; // noA =&gt; &#123; b: 2, c: 3 &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>用… to copy arrays</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">const item1 = [1, 2, 3]</div><div class="line">const item2 = [...item1]</div></pre></td></tr></table></figure>
+</li>
+<li><p>多行数组的定义方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">const arr = [[0, 1], [2, 3], [4, 5]]</div><div class="line">const objectArray = [</div><div class="line">   &#123;</div><div class="line">      id: 1,</div><div class="line">   &#125;,</div><div class="line">   &#123;</div><div class="line">      id: 2,</div><div class="line">   &#125;,</div><div class="line">]</div><div class="line">const numberInArray = [</div><div class="line">    1,</div><div class="line">    2,</div><div class="line">]</div></pre></td></tr></table></figure>
+</li>
+<li><p>尽量用解构赋值符</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">// bad</div><div class="line">function getFullName(user) &#123;</div><div class="line">  const firstName = user.firstName;</div><div class="line">  const lastName = user.lastName;</div><div class="line"></div><div class="line">  return `$&#123;firstName&#125; $&#123;lastName&#125;`;</div><div class="line">&#125;</div><div class="line">// good</div><div class="line">function getFullName(user) &#123;</div><div class="line">  const &#123; firstName, lastName &#125; = user;</div><div class="line">  return `$&#123;firstName&#125; $&#123;lastName&#125;`;</div><div class="line">&#125;</div><div class="line">// best</div><div class="line">function getFullName(&#123; firstName, lastName &#125;) &#123;</div><div class="line">  return `$&#123;firstName&#125; $&#123;lastName&#125;`;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>定义string尽量用’’</p>
+</li>
+<li><p>箭头函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">// bad</div><div class="line">if (currentUser) &#123;</div><div class="line">  function test() &#123;</div><div class="line">    console.log(&apos;Nope.&apos;);</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">// good</div><div class="line">let test;</div><div class="line">if (currentUser) &#123;</div><div class="line">  test = () =&gt; &#123;</div><div class="line">    console.log(&apos;Yup.&apos;);</div><div class="line">  &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>use === and !== over == and i=</p>
+</li>
+<li><p>switch…case…</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">// bad</div><div class="line">switch (foo) &#123;</div><div class="line">  case 1:</div><div class="line">    let x = 1;</div><div class="line">    break;</div><div class="line">  case 2:</div><div class="line">    const y = 2;</div><div class="line">    break;</div><div class="line">  case 3:</div><div class="line">    function f() &#123;</div><div class="line">      // ...</div><div class="line">    &#125;</div><div class="line">    break;</div><div class="line">  default:</div><div class="line">    class C &#123;&#125;</div><div class="line">&#125;</div><div class="line">// good</div><div class="line">switch (foo) &#123;</div><div class="line">  case 1: &#123;</div><div class="line">    let x = 1;</div><div class="line">    break;</div><div class="line">  &#125;</div><div class="line">  case 2: &#123;</div><div class="line">    const y = 2;</div><div class="line">    break;</div><div class="line">  &#125;</div><div class="line">  case 3: &#123;</div><div class="line">    function f() &#123;</div><div class="line">      // ...</div><div class="line">    &#125;</div><div class="line">    break;</div><div class="line">  &#125;</div><div class="line">  case 4:</div><div class="line">    bar();</div><div class="line">    break;</div><div class="line">  default: &#123;</div><div class="line">    class C &#123;&#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>取值判断</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">// bad</div><div class="line">const foo = a ? a : b;</div><div class="line">const bar = c ? true : false;</div><div class="line">const baz = c ? false : true;</div><div class="line">// good</div><div class="line">const foo = a || b;</div><div class="line">const bar = !!c;</div><div class="line">const baz = !c;</div><div class="line"></div><div class="line">// bad</div><div class="line">if ((foo === 123 || bar === &apos;abc&apos;) &amp;&amp; doesItLookGoodWhenItBecomesThatLong() &amp;&amp; isThisReallyHappening()) &#123;</div><div class="line">  thing1();</div><div class="line">&#125;</div><div class="line">// bad</div><div class="line">if (foo === 123 &amp;&amp;</div><div class="line">  bar === &apos;abc&apos;) &#123;</div><div class="line">  thing1();</div><div class="line">&#125;</div><div class="line">// bad</div><div class="line">if (foo === 123</div><div class="line">  &amp;&amp; bar === &apos;abc&apos;) &#123;</div><div class="line">  thing1();</div><div class="line">&#125;</div><div class="line">// good</div><div class="line">if (</div><div class="line">  (foo === 123 || bar === &quot;abc&quot;) &amp;&amp;</div><div class="line">  doesItLookGoodWhenItBecomesThatLong() &amp;&amp;</div><div class="line">  isThisReallyHappening()</div><div class="line">) &#123;</div><div class="line">  thing1();</div><div class="line">&#125;</div><div class="line">// good</div><div class="line">if (foo === 123 &amp;&amp; bar === &apos;abc&apos;) &#123;</div><div class="line">  thing1();</div><div class="line">&#125;</div><div class="line">// good</div><div class="line">if (</div><div class="line">  foo === 123 &amp;&amp;</div><div class="line">  bar === &apos;abc&apos;</div><div class="line">) &#123;</div><div class="line">  thing1();</div><div class="line">&#125;</div><div class="line">// good</div><div class="line">if (</div><div class="line">  foo === 123</div><div class="line">  &amp;&amp; bar === &apos;abc&apos;</div><div class="line">) &#123;</div><div class="line">  thing1();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/19/Promise_await_async/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cindy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郭郭的IT成长之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/05/19/Promise_await_async/" itemprop="url">async, await, Promise之间的关系</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-19T12:51:32+08:00">
+                2017-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h3><p>Promise对象用于异步计算，一个Promise表示一个现在或将来可用，亦或永远不可用的值</p>
+<h4 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h4><blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">new Promise(</div><div class="line">    /* executor */</div><div class="line">    function(resolve, reject) &#123;...&#125;</div><div class="line">);</div></pre></td></tr></table></figure>
+</blockquote>
+<h4 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h4><p>Promise 对象是一个代理对象（代理一个值），被代理的值在Promise对象创建时可能是未知的。它允许你为异步代码执行结果的成功和失败分别绑定相应的处理方法（handlers ）。 这让异步方法可以像同步方法那样返回值，但是并非立即返回执行的结果，因为毕竟执行的是异步代码，因此，它会返回一个Promise对象，如前所说，它是一个代理的对象，代理了最终返回的值，可以在后期使用</p>
+<p>一个 Promise有以下几种状态:</p>
+<p>pending: 初始状态，未履行或拒绝。<br>fulfilled: 意味着操作成功完成。<br>rejected: 意味着操作失败。<br>pending 状态的 Promise 对象可能以 fulfilled 状态返回了一个值，也可能被某种理由（异常信息）拒绝（reject）了。当其中任一种情况出现时，Promise 对象的 then 方法绑定的处理方法（handlers ）就会被调用（then方法包含两个参数：onfulfilled 和 onrejected，它们都是 Function 类型。当值被填充时，调用 then 的 onfulfilled 方法，当Promise被拒绝时，调用 then 的 onrejected 方法， 所以在异步操作的完成和绑定处理方法之间不存在竞争）。<br>因为 Promise.prototype.then 和 Promise.prototype.catch 方法返回 promise 对象自身， 所以它们可以被链式调用。<br><img src="/uploads/promises.png" alt="Alt text" title="Promise链式关系图解"></p>
+<h3 id="async-function"><a href="#async-function" class="headerlink" title="async function"></a>async function</h3><p>async function函数定义了一个异步函数，它返回一个AsyncFunction对象<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">async function name(params) &#123;</div><div class="line">   statements</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="描述："><a href="#描述：" class="headerlink" title="描述："></a>描述：</h4><blockquote>
+<p>调用异步函数时会返回一个 promise 对象。当这个异步函数返回一个值时，promise 的 resolve 方法将会处理这个返回值；当异步函数抛出的是异常或者非法值时，promise 的 reject 方法将处理这个异常值。<br>异步函数可能会包括await 表达式, 这将会使异步函数暂停执行并等待promise解析传值后, 继续执行异步函数并返回解析值。</p>
+</blockquote>
+<h4 id="举例："><a href="#举例：" class="headerlink" title="举例："></a>举例：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">function resolveAfter2Seconds(x) &#123;</div><div class="line">  return new Promise(resolve =&gt; &#123;</div><div class="line">    setTimeout(() =&gt; &#123;</div><div class="line">      resolve(x);</div><div class="line">    &#125;, 2000);</div><div class="line">  &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">async function add1(x) &#123;</div><div class="line">  var a = resolveAfter2Seconds(20);</div><div class="line">  var b = resolveAfter2Seconds(30);</div><div class="line">  return x + await a + await b;</div><div class="line">&#125;</div><div class="line"></div><div class="line">add1(10).then(v =&gt; &#123;</div><div class="line">  console.log(v);  // prints 60 after 2 seconds.</div><div class="line">&#125;);</div><div class="line"></div><div class="line">async function add2(x) &#123;</div><div class="line">  var a = await resolveAfter2Seconds(20);</div><div class="line">  var b = await resolveAfter2Seconds(30);</div><div class="line">  return x + a + b;</div><div class="line">&#125;</div><div class="line"></div><div class="line">add2(10).then(v =&gt; &#123;</div><div class="line">  console.log(v);  // prints 60 after 4 seconds.</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h3 id="await"><a href="#await" class="headerlink" title="await"></a>await</h3><blockquote>
+<p>await 操作符用于等待一个async function返回的一个Promise</p>
+</blockquote>
+<h4 id="语法-1"><a href="#语法-1" class="headerlink" title="语法"></a>语法</h4><blockquote>
+<p>[return_value] = await expression;</p>
+</blockquote>
+<h4 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h4><p>返回promise的解析值，如果不是promise, 则返回值本身</p>
+<h4 id="表达式"><a href="#表达式" class="headerlink" title="表达式"></a>表达式</h4><p>一个promise或者任何等待解析的值</p>
+<h4 id="描述：-1"><a href="#描述：-1" class="headerlink" title="描述："></a>描述：</h4><p>await 表达式会造成异步函数停止执行并且等待promise的解决，当值被resolved，异步函数会恢复执行以及返回resolved值。如果该值不是一个promise，它将会被转换成一个resolved后的promise。<br>如果promise被rejected，await表达式会抛出异常值。</p>
+<h4 id="举例：-1"><a href="#举例：-1" class="headerlink" title="举例："></a>举例：</h4><p>如果一个Promise被传递到一个await表达，它会等待Promise的解析并返回解析的值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">function resolveAfter2Seconds(x) &#123;</div><div class="line">  return new Promise(resolve =&gt; &#123;</div><div class="line">    setTimeout(() =&gt; &#123;</div><div class="line">      resolve(x);</div><div class="line">    &#125;, 2000);</div><div class="line">  &#125;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">async function f1() &#123;</div><div class="line">  var x = await resolveAfter2Seconds(10);</div><div class="line">  console.log(x); // 10</div><div class="line">&#125;</div><div class="line">f1();</div></pre></td></tr></table></figure></p>
+<p>如果该值不是一个Promise，它将该值转换为已解决的Promise，并等待它<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">async function f2() &#123;</div><div class="line">  var y = await 20;</div><div class="line">  console.log(y); // 20</div><div class="line">&#125;</div><div class="line">f2();</div></pre></td></tr></table></figure></p>
+<p>如果Promise被拒绝，则拒绝的值被抛出<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">async function f3() &#123;</div><div class="line">  try &#123;</div><div class="line">    var z = await Promise.reject(30);</div><div class="line">  &#125; catch (e) &#123;</div><div class="line">    console.log(e); // 30</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line">f3();</div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/19/css-box/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cindy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="郭郭的IT成长之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/05/19/css-box/" itemprop="url">css盒子模型由了解到深入</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-19T12:51:29+08:00">
+                2017-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>内边距不能是负值，但是外边距可以</li>
+<li>外边距通常是透明的，从中可以看到父元素的背景</li>
+<li>边框与内容和内边距有相同的颜色</li>
+<li>边框的宽度绝对不能为负值</li>
+</ol>
+<p>包含块：<br>每个元素都相对于其包含块摆放，</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/08/start/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -521,7 +915,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
